@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Http\Controllers;
 
 use App\Models\Course;
@@ -7,66 +8,73 @@ use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
+
     public function index()
     {
         $courses = Course::all();
-        return response()->json($courses);
+        return view('courses.index', compact('courses'));
+    }
+
+    public function create()
+    {
+        return view('courses.create');
     }
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'title' => 'required',
             'description' => 'required',
             'category_id' => 'required|exists:categories,category_id',
             'created_by' => 'required|exists:users,user_id',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-
         $course = Course::create($request->all());
-        return response()->json($course, 201);
+        return redirect()->route('courses.index')->with('success', 'Course created successfully');
     }
 
     public function show($id)
     {
         $course = Course::find($id);
         if (is_null($course)) {
-            return response()->json(['message' => 'Course not found'], 404);
+            return redirect()->route('courses.index')->with('error', 'Course not found');
         }
-        return response()->json($course);
+        return view('courses.show', compact('course'));
+    }
+
+    public function edit($id)
+    {
+        $course = Course::find($id);
+        if (is_null($course)) {
+            return redirect()->route('courses.index')->with('error', 'Course not found');
+        }
+        return view('courses.edit', compact('course'));
     }
 
     public function update(Request $request, $id)
     {
         $course = Course::find($id);
         if (is_null($course)) {
-            return response()->json(['message' => 'Course not found'], 404);
+            return redirect()->route('courses.index')->with('error', 'Course not found');
         }
 
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'category_id' => 'exists:categories,category_id',
             'created_by' => 'exists:users,user_id',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-
         $course->update($request->all());
-        return response()->json($course);
+        return redirect()->route('courses.index')->with('success', 'Course updated successfully');
     }
 
     public function destroy($id)
     {
         $course = Course::find($id);
         if (is_null($course)) {
-            return response()->json(['message' => 'Course not found'], 404);
+            return redirect()->route('courses.index')->with('error', 'Course not found');
         }
 
         $course->delete();
-        return response()->json(['message' => 'Course deleted successfully']);
+        return redirect()->route('courses.index')->with('success', 'Course deleted successfully');
     }
 }

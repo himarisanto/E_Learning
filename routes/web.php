@@ -7,6 +7,13 @@ use App\Http\Controllers\DiscussionController;
 use App\Http\Controllers\ReplyController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\LessonController;
+use App\Http\Controllers\QuizController;
+use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\OptionController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -22,8 +29,56 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+//courses
+Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
+Route::get('/courses/create', [CourseController::class, 'create'])->name('courses.create');
+Route::post('/courses', [CourseController::class, 'store'])->name('courses.store');
+Route::get('/courses/{id}', [CourseController::class, 'show'])->name('courses.show');
+Route::get('/courses/{id}/edit', [CourseController::class, 'edit'])->name('courses.edit');
+Route::put('/courses/{id}', [CourseController::class, 'update'])->name('courses.update');
+Route::delete('/courses/{id}', [CourseController::class, 'destroy'])->name('courses.destroy');
+//category
+Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+Route::get('/categories/{id}', [CategoryController::class, 'show'])->name('categories.show'); 
+Route::get('/categories/{id}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
+Route::put('/categories/{id}', [CategoryController::class, 'update'])->name('categories.update');
+Route::delete('/categories/{id}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+//lesson
+Route::get('/lessons', [LessonController::class, 'index'])->name('lessons.index');
+Route::get('/lessons/create', [LessonController::class, 'create'])->name('lessons.create');
+Route::post('/lessons', [LessonController::class, 'store'])->name('lessons.store');
+Route::get('/lessons/{id}', [LessonController::class, 'show'])->name('lessons.show');
+Route::get('/lessons/{id}/edit', [LessonController::class, 'edit'])->name('lessons.edit');
+Route::put('/lessons/{id}', [LessonController::class, 'update'])->name('lessons.update');
+Route::delete('/lessons/{id}', [LessonController::class, 'destroy'])->name('lessons.destroy');
+//kuiz
+Route::get('/quizzes', [QuizController::class, 'index'])->name('quizzes.index');
+Route::get('/quizzes/create', [QuizController::class, 'create'])->name('quizzes.create');
+Route::post('/quizzes', [QuizController::class, 'store'])->name('quizzes.store');
+Route::get('/quizzes/{id}', [QuizController::class, 'show'])->name('quizzes.show');
+Route::get('/quizzes/{id}/edit', [QuizController::class, 'edit'])->name('quizzes.edit');
+Route::put('/quizzes/{id}', [QuizController::class, 'update'])->name('quizzes.update');
+Route::delete('/quizzes/{id}', [QuizController::class, 'destroy'])->name('quizzes.destroy');
+//question
+Route::get('/questions', [QuestionController::class, 'index'])->name('questions.index');
+Route::get('/questions/create', [QuestionController::class, 'create'])->name('questions.create');
+Route::post('/questions', [QuestionController::class, 'store'])->name('questions.store');
+Route::get('/questions/{id}', [QuestionController::class, 'show'])->name('questions.show');
+Route::get('/questions/{id}/edit', [QuestionController::class, 'edit'])->name('questions.edit');
+Route::put('/questions/{id}', [QuestionController::class, 'update'])->name('questions.update');
+Route::delete('/questions/{id}', [QuestionController::class, 'destroy'])->name('questions.destroy');
+//options
 
-//Gradess
+Route::get('/options', [OptionController::class, 'index'])->name('options.index');
+Route::get('/options/create', [OptionController::class, 'create'])->name('options.create');
+Route::post('/options', [OptionController::class, 'store'])->name('options.store');
+Route::get('/options/{id}', [OptionController::class, 'show'])->name('options.show');
+Route::get('/options/{id}/edit', [OptionController::class, 'edit'])->name('options.edit');
+Route::put('/options/{id}', [OptionController::class, 'update'])->name('options.update');
+Route::delete('/options/{id}', [OptionController::class, 'destroy'])->name('options.destroy');
+//grades
 Route::get('/grades', [GradeController::class, 'index'])->name('grades.index');
 Route::get('/grades/create', [GradeController::class, 'create'])->name('grades.create');
 Route::post('/grades', [GradeController::class, 'store'])->name('grades.store');

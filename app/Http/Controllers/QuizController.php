@@ -4,66 +4,85 @@ namespace App\Http\Controllers;
 
 use App\Models\Quiz;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class QuizController extends Controller
 {
     public function index()
     {
         $quizzes = Quiz::all();
-        return response()->json($quizzes);
+        return view('quizzes.index', compact('quizzes'));
+    }
+
+    public function create()
+    {
+        return view('quizzes.create');
     }
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'course_id' => 'required|exists:courses,course_id',
+            'course_id' => 'required|exists:courses,id',
             'title' => 'required',
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $quiz = Quiz::create($request->all());
-        return response()->json($quiz, 201);
+        Quiz::create($request->all());
+
+        return redirect()->route('quizzes.index')->with('success', 'Quiz created successfully');
     }
 
     public function show($id)
     {
         $quiz = Quiz::find($id);
         if (is_null($quiz)) {
-            return response()->json(['message' => 'Quiz not found'], 404);
+            return redirect()->route('quizzes.index')->with('error', 'Quiz not found');
         }
-        return response()->json($quiz);
+        return view('quizzes.show', compact('quiz'));
+    }
+
+    public function edit($id)
+    {
+        $quiz = Quiz::find($id);
+        if (is_null($quiz)) {
+            return redirect()->route('quizzes.index')->with('error', 'Quiz not found');
+        }
+        return view('quizzes.edit', compact('quiz'));
     }
 
     public function update(Request $request, $id)
     {
         $quiz = Quiz::find($id);
         if (is_null($quiz)) {
-            return response()->json(['message' => 'Quiz not found'], 404);
+            return redirect()->route('quizzes.index')->with('error', 'Quiz not found');
         }
 
         $validator = Validator::make($request->all(), [
-            'course_id' => 'exists:courses,course_id',
+            'course_id' => 'required|exists:courses,id',
+            'title' => 'required',
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return redirect()->back()->withErrors($validator)->withInput();
         }
 
         $quiz->update($request->all());
-        return response()->json($quiz);
+
+        return redirect()->route('quizzes.index')->with('success', 'Quiz updated successfully');
     }
 
     public function destroy($id)
     {
         $quiz = Quiz::find($id);
         if (is_null($quiz)) {
-            return response()->json(['message' => 'Quiz not found'], 404);
+            return redirect()->route('quizzes.index')->with('error', 'Quiz not found');
         }
 
         $quiz->delete();
-        return response()->json(['message' => 'Quiz deleted successfully']);
+
+        return redirect()->route('quizzes.index')->with('success', 'Quiz deleted successfully');
     }
 }
