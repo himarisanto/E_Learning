@@ -5,80 +5,94 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+    // Display a listing of the users
     public function index()
     {
-        $users = User::all();
-        return response()->json($users);
+        return view('user.dashboard');
     }
 
+    // Show the form for creating a new user
+    public function create()
+    {
+        return view('users.create');
+    }
+
+    // Store a newly created user in storage
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'username' => 'required|unique:users',
-            'password' => 'required|min:8',
-            'email' => 'required|email|unique:users',
-            'full_name' => 'required',
+        $request->validate([
+            'name' => 'required|max:255',
+            'username' => 'required|unique:users|max:50',
+            'password' => 'required|min:6',
+            'email' => 'required|unique:users|max:100',
+            'full_name' => 'required|max:100',
             'role' => 'required|in:admin,guru,user',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-
-        $user = User::create([
-            'username' => $request->username,
-            'password' => Hash::make($request->password),
-            'email' => $request->email,
-            'full_name' => $request->full_name,
-            'role' => $request->role,
+        $user = new User([
+            'name' => $request->get('name'),
+            'username' => $request->get('username'),
+            'password' => Hash::make($request->get('password')),
+            'email' => $request->get('email'),
+            'full_name' => $request->get('full_name'),
+            'role' => $request->get('role'),
         ]);
 
-        return response()->json($user, 201);
+        $user->save();
+
+        return redirect('/users')->with('success', 'User created!');
     }
 
+    // Display the specified user
     public function show($id)
     {
         $user = User::find($id);
-        if (is_null($user)) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-        return response()->json($user);
+        return view('users.show', compact('user'));
     }
 
-    public function update(Request $request, $id)
+    // Show the form for editing the specified user
+    public function edit($id)
     {
         $user = User::find($id);
-        if (is_null($user)) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'username' => 'unique:users,username,' . $id . ',user_id',
-            'email' => 'email|unique:users,email,' . $id . ',user_id',
-            'role' => 'in:admin,guru,user',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
-
-        $user->update($request->all());
-
-        return response()->json($user);
+        return view('users.edit', compact('user'));
     }
 
+    // Update the specified user in storage
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'sometimes|required|max:255',
+            'username' => 'sometimes|required|unique:users,username,' . $id . '|max:50',
+            'password' => 'sometimes|required|min:6',
+            'email' => 'sometimes|required|unique:users,email,' . $id . '|max:100',
+            'full_name' => 'sometimes|required|max:100',
+            'role' => 'sometimes|required|in:admin,guru,user',
+        ]);
+
+        $user = User::find($id);
+        $user->name = $request->get('name', $user->name);
+        $user->username = $request->get('username', $user->username);
+        if ($request->has('password')) {
+            $user->password = Hash::make($request->get('password'));
+        }
+        $user->email = $request->get('email', $user->email);
+        $user->full_name = $request->get('full_name', $user->full_name);
+        $user->role = $request->get('role', $user->role);
+
+        $user->save();
+
+        return redirect('/users')->with('success', 'User updated!');
+    }
+
+    // Remove the specified user from storage
     public function destroy($id)
     {
         $user = User::find($id);
-        if (is_null($user)) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-
         $user->delete();
-        return response()->json(['message' => 'User deleted successfully']);
+
+        return redirect('/users')->with('success', 'User deleted!');
     }
 }

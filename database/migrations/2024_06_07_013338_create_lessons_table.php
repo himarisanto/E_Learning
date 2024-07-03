@@ -6,21 +6,32 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateLessonsTable extends Migration
 {
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
     public function up()
     {
         Schema::create('lessons', function (Blueprint $table) {
             $table->id('lesson_id');
             $table->unsignedBigInteger('course_id');
-            $table->foreign('course_id')->references('course_id')->on('courses');
             $table->string('title', 100);
-            $table->text('content');
+            $table->text('content')->nullable(); // Assuming content can be nullable
             $table->timestamps();
+
+            // Adding the foreign key constraint
+            $table->foreign('course_id')->references('course_id')->on('courses')->onDelete('cascade');
         });
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down()
     {
         Schema::dropIfExists('lessons');
     }
 }
-

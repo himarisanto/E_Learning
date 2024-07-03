@@ -1,54 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title') - Dugu</title>
+    <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
-    <!-- Styles -->
-    <link href="{{ asset('assets/css/icons/icomoon/styles.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/bootstrap_limitless.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/layout.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/components.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/css/colors.min.css') }}" rel="stylesheet">
+
+    <script src="{{ asset('js/app.js') }}" defer></script>
 </head>
-<body>
-    <div class="navbar navbar-expand-md navbar-light">
-        <div class="navbar-header navbar-dark d-none d-md-flex align-items-md-center">
-            <div class="navbar-brand navbar-brand-md">
-                <a href="{{ route('dashboard') }}" class="d-inline-block" style="color: white; font-size: 20px; text-decoration: none; font-family: Arial, sans-serif; font-weight: bold;">
-                    Dugu
-                </a>
-            </div>
-        </div>
-        <div class="collapse navbar-collapse" id="navbar-mobile">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a href="{{ route('login') }}" class="nav-link">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('register') }}" class="nav-link">Register</a>
-                </li>
+<body class="antialiased">
+    <div>
+        <nav>
+            <ul>
+                <li><a href="{{ route('courses.index') }}">Courses</a></li>
+                <li><a href="{{ route('categories.index') }}">Categories</a></li>
+                <li><a href="{{ route('lessons.index') }}">Lessons</a></li>
+                <li><a href="{{ route('quizzes.index') }}">Quizzes</a></li>
+                <li><a href="{{ route('questions.index') }}">Questions</a></li>
+                <li><a href="{{ route('options.index') }}">Options</a></li>
+                <li><a href="{{ route('grades.index') }}">Grades</a></li>
+                <li><a href="{{ route('discussions.index') }}">Discussions</a></li>
+                <li><a href="{{ route('replies.index') }}">Replies</a></li>
+                <li><a href="{{ route('notifications.index') }}">Notifications</a></li>
+                <li><a href="{{ route('payments.index') }}">Payments</a></li>
+                <li><a href="{{ route('enrollments.index') }}">Enrollments</a></li>
             </ul>
-        </div>
-    </div>
-    <div class="container">
-        @yield('content')
-    </div>
+        </nav>
 
-    <!-- Scripts -->
-    <script src="{{ asset('assets/js/main/jquery.min.js') }}"></script>
-    <script src="{{ asset('assets/js/main/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugins/prism.min.js') }}"></script>
-    <script src="{{ asset('assets/js/plugins/sticky.min.js') }}"></script>
-    <script src="{{ asset('assets/js/main/app.js') }}"></script>
-    <script src="{{ asset('assets/js/pages/components_scrollspy.js') }}"></script>
+        <main>
+            @yield('content')
+        </main>
+    </div>
 </body>
 </html>
